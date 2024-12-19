@@ -1,28 +1,22 @@
 package telran.producer.consumer;
 
-public class Sender extends Thread {
+public class Sender extends Thread{
     private int nMessages;
-    private MessageBox evenMessageBox;
-    private MessageBox oddMessageBox;
-
-    public Sender(int nMessages, MessageBox evenMessageBox, MessageBox oddMessageBox) {
+    private MessageBox messageBox;
+    public Sender(int nMessages, MessageBox messageBox) {
         this.nMessages = nMessages;
-        this.evenMessageBox = evenMessageBox;
-        this.oddMessageBox = oddMessageBox;
+        this.messageBox = messageBox;
     }
-
     @Override
-    public void run() {
-        for (int i = 0; i < nMessages; i++) {
+    public void run(){
+        for(int i = 0; i < nMessages; i++) {
             try {
-                if ((i + 1) % 2 == 0) {
-                    evenMessageBox.put("Message: " + (i + 1));
-                } else {
-                    oddMessageBox.put("Message: " + (i + 1));
-                }
+                messageBox.put("Message" + (i +1));
             } catch (InterruptedException e) {
-
+                
             }
-        }
+            
     }
+}
+
 }

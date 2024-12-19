@@ -1,23 +1,27 @@
 package telran.producer.consumer;
 
+import java.util.Arrays;
+
 public class Main {
     private static final int N_MESSAGES = 20;
     static final int N_RECEIVERS = 10;
 
     public static void main(String[] args) throws InterruptedException {
-        MessageBox evenMessageBox = new SimpleMessageBox();
-        MessageBox oddMessageBox = new SimpleMessageBox();
-        Sender sender = new Sender(N_MESSAGES, evenMessageBox, oddMessageBox);
+        MessageBox messageBox = new BlockingQueueMessageBox();
+        Sender sender = new Sender(N_MESSAGES, messageBox);
         Receiver[] receivers = new Receiver[N_RECEIVERS];
         for (int i = 0; i < N_RECEIVERS; i++) {
-            receivers[i] = new Receiver((i % 2 != 0) ? evenMessageBox : oddMessageBox, i % 2 != 0);
+            receivers[i] = new Receiver(messageBox);
             receivers[i].start();
         }
         sender.start();
         sender.join();
-        for (Receiver receiver : receivers) {
-            receiver.interrupt();
-            receiver.join();
-        }
+        stopReceivers(receivers);
+        
+        
+    }
+
+    private static void stopReceivers(Receiver[] receivers) {
+        Arrays.stream(receivers).forEach(Receiver::interrupt);
     }
 }
